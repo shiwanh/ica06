@@ -4,11 +4,8 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"strconv"
-	"strings"
 
 	"github.com/go-martini/martini"
-	"github.com/martini-contrib/render"
 
 	"net/http"
 	"net/url"
@@ -26,16 +23,6 @@ func main() {
 		speech, _ := Speak(text, "no") //Get audio from text
 		// Changing сontent-type, otherwise browser does not understand that this is an audio recording
 		w.Header().Set("Content-Type", "audio/mpeg")
-
-		m.Get("/", func(r render.Render, x *http.Request) {
-			place := string(x.FormValue("place"))
-			place = strings.Replace(place, " ", "+", -1)
-
-			if len(place) <= 0 {
-				place = "Universiteter+I+Norge"
-			}
-			r.HTML(200, "index", SiteData{"Text to speech", strconv.Itoa(count), getServerIP(), place})
-		})
 
 		speech.WriteTo(w) //In response we send an audio file
 	})
